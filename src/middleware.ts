@@ -14,15 +14,17 @@ export async function middleware(request: NextRequest) {
 
   const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage';
 
-  if (!process.env.PASSWORD) {
-    // 如果没有设置密码，重定向到警告页面
-    const warningUrl = new URL('/warning', request.url);
-    return NextResponse.redirect(warningUrl);
-  }
+  /* 强制必须设置密码，这没有必要。准备开放公网访问 */
+  // if (!process.env.PASSWORD) {
+  //   // OLD 如果没有设置密码，重定向到警告页面
+  //   const warningUrl = new URL('/warning', request.url);
+  //   return NextResponse.redirect(warningUrl);
+  // }
 
   // 从cookie获取认证信息
   const authInfo = getAuthInfoFromCookie(request);
 
+  // 非localstorage模式的未登录验证方法，也就是说主要都走这个
   if (!authInfo) {
     return handleAuthFailure(request, pathname);
   }
@@ -125,6 +127,7 @@ function shouldSkipAuth(pathname: string): boolean {
     '/icons/',
     '/logo.png',
     '/screenshot.png',
+    '/register',
   ];
 
   return skipPaths.some((path) => pathname.startsWith(path));

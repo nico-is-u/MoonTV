@@ -9,7 +9,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { checkForUpdates, CURRENT_VERSION, UpdateStatus } from '@/lib/version';
 
 import { useSite } from '@/components/SiteProvider';
-import { ThemeToggle } from '@/components/ThemeToggle';
+// import { ThemeToggle } from '@/components/ThemeToggle';
 
 // 版本显示组件
 function VersionDisplay() {
@@ -73,7 +73,7 @@ function LoginPageClient() {
   const [username, setUsername] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [shouldAskUsername, setShouldAskUsername] = useState(false);
+  const [shouldAskUsername, setShouldAskUsername] = useState(true);
   const [enableRegister, setEnableRegister] = useState(false);
   const { siteName } = useSite();
 
@@ -81,7 +81,12 @@ function LoginPageClient() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storageType = (window as any).RUNTIME_CONFIG?.STORAGE_TYPE;
-      setShouldAskUsername(storageType && storageType !== 'localstorage');
+
+      /* 这个地方有个延时判断是否为超管的设计，已没有必要
+      超管像普通用户一样登录即可 */
+      // setShouldAskUsername(storageType && storageType !== 'localstorage');
+
+
       setEnableRegister(
         Boolean((window as any).RUNTIME_CONFIG?.ENABLE_REGISTER)
       );
@@ -109,7 +114,8 @@ function LoginPageClient() {
         const redirect = searchParams.get('redirect') || '/';
         router.replace(redirect);
       } else if (res.status === 401) {
-        setError('密码错误');
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? '服务器错误');
       } else {
         const data = await res.json().catch(() => ({}));
         setError(data.error ?? '服务器错误');
@@ -148,12 +154,25 @@ function LoginPageClient() {
     }
   };
 
+  // 去注册页面
+  const goToRegister = () => {
+    router.push('/register');
+  };
+
   return (
     <div className='relative min-h-screen flex items-center justify-center px-4 overflow-hidden'>
+
+      <div className='absolute top-4 right-4'>
+        <h1 className="text-xl font-semibold cursor-pointer" onClick={goToRegister}>
+          <span className="text-gray-500 dark:text-gray-400"> 用户注册 &gt; </span>
+        </h1>
+      </div>
+
       <div className='absolute top-4 right-4'>
         {/* 暂时屏蔽主题切换 */}
         {/* <ThemeToggle /> */}
       </div>
+
       <div className='relative z-10 w-full max-w-md rounded-3xl bg-gradient-to-b from-white/90 via-white/70 to-white/40 dark:from-zinc-900/90 dark:via-zinc-900/70 dark:to-zinc-900/40 backdrop-blur-xl shadow-2xl p-10 dark:border dark:border-zinc-800'>
         <h1 className='text-orange-300 tracking-tight text-center text-3xl font-extrabold mb-8 bg-clip-text drop-shadow-sm'>
           {siteName}
@@ -168,7 +187,7 @@ function LoginPageClient() {
                 id='username'
                 type='text'
                 autoComplete='username'
-                className='block w-full rounded-lg border-0 py-3 px-4 text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-white/60 dark:ring-white/20 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-green-500 focus:outline-none sm:text-base bg-white/60 dark:bg-zinc-800/60 backdrop-blur'
+                className='block w-full rounded-lg border-0 py-3 px-4 text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-white/60 dark:ring-white/20 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-orange-300 focus:outline-none sm:text-base bg-white/60 dark:bg-zinc-800/60 backdrop-blur'
                 placeholder='输入用户名'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -184,7 +203,7 @@ function LoginPageClient() {
               id='password'
               type='password'
               autoComplete='current-password'
-              className='block w-full rounded-lg border-0 py-3 px-4 text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-white/60 dark:ring-white/20 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-green-500 focus:outline-none sm:text-base bg-white/60 dark:bg-zinc-800/60 backdrop-blur'
+              className='block w-full rounded-lg border-0 py-3 px-4 text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-white/60 dark:ring-white/20 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-orange-300 focus:outline-none sm:text-base bg-white/60 dark:bg-zinc-800/60 backdrop-blur'
               placeholder='输入访问密码'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -196,37 +215,18 @@ function LoginPageClient() {
           )}
 
           {/* 登录 / 注册按钮 */}
-          {shouldAskUsername && enableRegister ? (
-            <div className='flex gap-4'>
-              <button
-                type='button'
-                onClick={handleRegister}
-                disabled={!password || !username || loading}
-                className='flex-1 inline-flex justify-center rounded-lg bg-blue-600 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50'
-              >
-                {loading ? '注册中...' : '注册'}
-              </button>
-              <button
-                type='submit'
-                disabled={
-                  !password || loading || (shouldAskUsername && !username)
-                }
-                className='flex-1 inline-flex justify-center rounded-lg bg-green-600 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:from-green-600 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
-              >
-                {loading ? '登录中...' : '登录'}
-              </button>
-            </div>
-          ) : (
+          <div className='flex gap-4'>
             <button
               type='submit'
               disabled={
                 !password || loading || (shouldAskUsername && !username)
               }
-              className='inline-flex w-full justify-center rounded-lg bg-green-600 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:from-green-600 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
+              className='flex-1 inline-flex justify-center rounded-lg bg-orange-400 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:from-green-600 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
             >
               {loading ? '登录中...' : '登录'}
             </button>
-          )}
+          </div>
+
         </form>
       </div>
 

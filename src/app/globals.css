@@ -33,12 +33,14 @@ html:not(.dark) body {
   background: linear-gradient(
     180deg,
     #e6f3fb 0%,
-    #eaf3f7 18%,
-    #f7f7f3 38%,
-    #e9ecef 60%,
-    #dbe3ea 80%,
+    #eaf3f7 6%,
+    #f7f7f3 26%,
+    #e9ecef 76%,
+    #dbe3ea 86%,
     #d3dde6 100%
   );
+
+
   background-attachment: fixed;
 }
 
