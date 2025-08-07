@@ -32,12 +32,9 @@ body {
 html:not(.dark) body {
   background: linear-gradient(
     180deg,
-    #e6f3fb 0%,
-    #eaf3f7 6%,
-    #f7f7f3 26%,
-    #e9ecef 76%,
-    #dbe3ea 86%,
-    #d3dde6 100%
+    #fffefb 0%,
+    #fffbf3 50%,
+    #fcf9f0 100%
   );
 
 

@@ -6,12 +6,32 @@ import { BackButton } from './BackButton';
 import { useSite } from './SiteProvider';
 import { ThemeToggle } from './ThemeToggle';
 import { UserMenu } from './UserMenu';
+import { useLayoutEffect, useState } from 'react';
 
 interface MobileHeaderProps {
   showBackButton?: boolean;
 }
 
+/* 写的非常粗糙，待优化 */
+import { getAuthInfoFromBrowserCookie } from '@/lib/auth';
+interface AuthInfo {
+  username?: string;
+  role?: 'owner' | 'admin' | 'user';
+}
+
 const MobileHeader = ({ showBackButton = false }: MobileHeaderProps) => {
+
+  /* 写的非常粗糙，待优化 */
+  const [authInfo, setAuthInfo] = useState<AuthInfo | null>(null);
+
+  useLayoutEffect(() => {
+    /* 写的非常粗糙，待优化 */
+    if (typeof window !== 'undefined') {
+      const auth = getAuthInfoFromBrowserCookie();
+      setAuthInfo(auth);
+    }
+  }, []);
+
   const { siteName } = useSite();
   return (
     <header className='md:hidden relative w-full bg-white/70 backdrop-blur-xl border-b border-gray-200/50 shadow-sm dark:bg-gray-900/70 dark:border-gray-700/50'>
@@ -23,7 +43,8 @@ const MobileHeader = ({ showBackButton = false }: MobileHeaderProps) => {
 
         {/* 右侧按钮 */}
         <div className='flex items-center gap-2'>
-          <ThemeToggle />
+          {/* 主题切换，暂时屏蔽 */}
+          {/* <ThemeToggle /> */}
           <UserMenu />
         </div>
       </div>
@@ -32,9 +53,10 @@ const MobileHeader = ({ showBackButton = false }: MobileHeaderProps) => {
       <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
         <Link
           href='/'
-          className='text-2xl font-bold text-green-600 tracking-tight hover:opacity-80 transition-opacity'
+          className='text-2xl font-bold text-orange-600 tracking-tight hover:opacity-80 transition-opacity'
         >
-          {siteName}
+          {/* 非常粗糙，待优化 */}
+          {authInfo?.username === 'jiajia' ? '佳佳和东东' : siteName}
         </Link>
       </div>
     </header>

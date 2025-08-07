@@ -34,7 +34,8 @@ const PageLayout = ({ children, activePath = '/' }: PageLayoutProps) => {
 
           {/* 桌面端顶部按钮 */}
           <div className='absolute top-2 right-4 z-20 hidden md:flex items-center gap-2'>
-            <ThemeToggle />
+            {/* 主题切换，暂时屏蔽 */}
+            {/* <ThemeToggle /> */}
             <UserMenu />
           </div>
 

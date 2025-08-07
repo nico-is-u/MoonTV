@@ -16,6 +16,13 @@ import {
 
 import { useSite } from './SiteProvider';
 
+/* 写的非常粗糙，待优化 */
+import { getAuthInfoFromBrowserCookie } from '@/lib/auth';
+interface AuthInfo {
+  username?: string;
+  role?: 'owner' | 'admin' | 'user';
+}
+
 interface SidebarContextType {
   isCollapsed: boolean;
 }
@@ -27,16 +34,24 @@ const SidebarContext = createContext<SidebarContextType>({
 export const useSidebar = () => useContext(SidebarContext);
 
 // 可替换为你自己的 logo 图片
-const Logo = () => {
+const Logo = ({ username = '' }) => {
   const { siteName } = useSite();
   return (
     <Link
       href='/'
       className='flex items-center justify-center h-16 select-none hover:opacity-80 transition-opacity duration-200'
     >
-      <span className='text-2xl font-bold text-green-600 tracking-tight'>
-        {siteName}
-      </span>
+      {/* 非常粗糙，待优化 */}
+      {username === 'jiajia' ? (
+        <span className='text-xl font-bold text-orange-400 tracking-tight'>
+          佳佳和东东
+        </span>
+      ) : (
+        <span className='text-2xl font-bold text-orange-400 tracking-tight'>
+          {siteName}
+        </span>
+      )}
+
     </Link>
   );
 };
@@ -57,6 +72,10 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  /* 写的非常粗糙，待优化 */
+  const [authInfo, setAuthInfo] = useState<AuthInfo | null>(null);
+
   // 若同一次 SPA 会话中已经读取过折叠状态，则直接复用，避免闪烁
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
     if (
@@ -70,6 +89,18 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
 
   // 首次挂载时读取 localStorage，以便刷新后仍保持上次的折叠状态
   useLayoutEffect(() => {
+
+    /* 写的非常粗糙，待优化 */
+    if (typeof window !== 'undefined') {
+      const auth = getAuthInfoFromBrowserCookie();
+      setAuthInfo(auth);
+
+      if (auth?.username === 'jiajia') {
+        document.title = '佳佳和东东';
+      }
+
+    }
+
     const saved = localStorage.getItem('sidebarCollapsed');
     if (saved !== null) {
       const val = JSON.parse(saved);
@@ -162,9 +193,8 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
       <div className='hidden md:flex'>
         <aside
           data-sidebar
-          className={`fixed top-0 left-0 h-screen bg-white/40 backdrop-blur-xl transition-all duration-300 border-r border-gray-200/50 z-10 shadow-lg dark:bg-gray-900/70 dark:border-gray-700/50 ${
-            isCollapsed ? 'w-16' : 'w-64'
-          }`}
+          className={`fixed top-0 left-0 h-screen bg-white/40 backdrop-blur-xl transition-all duration-300 border-r border-gray-200/50 z-10 shadow-lg dark:bg-gray-900/70 dark:border-gray-700/50 ${isCollapsed ? 'w-16' : 'w-64'
+            }`}
           style={{
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
@@ -174,19 +204,17 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
             {/* 顶部 Logo 区域 */}
             <div className='relative h-16'>
               <div
-                className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${
-                  isCollapsed ? 'opacity-0' : 'opacity-100'
-                }`}
+                className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${isCollapsed ? 'opacity-0' : 'opacity-100'
+                  }`}
               >
                 <div className='w-[calc(100%-4rem)] flex justify-center'>
-                  {!isCollapsed && <Logo />}
+                  {!isCollapsed && <Logo username={authInfo?.username} />}
                 </div>
               </div>
               <button
                 onClick={handleToggle}
-                className={`absolute top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 transition-colors duration-200 z-10 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700/50 ${
-                  isCollapsed ? 'left-1/2 -translate-x-1/2' : 'right-2'
-                }`}
+                className={`absolute top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100/50 transition-colors duration-200 z-10 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-700/50 ${isCollapsed ? 'left-1/2 -translate-x-1/2' : 'right-2'
+                  }`}
               >
                 <Menu className='h-4 w-4' />
               </button>
@@ -198,12 +226,11 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
                 href='/'
                 onClick={() => setActive('/')}
                 data-active={active === '/'}
-                className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-gray-700 hover:bg-gray-100/30 hover:text-green-600 data-[active=true]:bg-green-500/20 data-[active=true]:text-green-700 font-medium transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-green-400 dark:data-[active=true]:bg-green-500/10 dark:data-[active=true]:text-green-400 ${
-                  isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
-                } gap-3 justify-start`}
+                className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-gray-700 hover:bg-gray-100/30 hover:text-orange-500 data-[active=true]:bg-orange-400/20 data-[active=true]:text-orange-600 font-medium transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-green-400 dark:data-[active=true]:bg-green-500/10 dark:data-[active=true]:text-green-400 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                  } gap-3 justify-start`}
               >
                 <div className='w-4 h-4 flex items-center justify-center'>
-                  <Home className='h-4 w-4 text-gray-500 group-hover:text-green-600 data-[active=true]:text-green-700 dark:text-gray-400 dark:group-hover:text-green-400 dark:data-[active=true]:text-green-400' />
+                  <Home className='h-4 w-4 group-hover:text-orange-600 data-[active=true]:text-orange-700 dark:text-gray-400 dark:group-hover:text-green-400 dark:data-[active=true]:text-green-400' />
                 </div>
                 {!isCollapsed && (
                   <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
@@ -219,12 +246,11 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
                   setActive('/search');
                 }}
                 data-active={active === '/search'}
-                className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-gray-700 hover:bg-gray-100/30 hover:text-green-600 data-[active=true]:bg-green-500/20 data-[active=true]:text-green-700 font-medium transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-green-400 dark:data-[active=true]:bg-green-500/10 dark:data-[active=true]:text-green-400 ${
-                  isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
-                } gap-3 justify-start`}
+                className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-gray-700 hover:bg-gray-100/30 hover:text-orange-600 data-[active=true]:bg-orange-500/20 data-[active=true]:text-orange-600 font-medium transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-green-400 dark:data-[active=true]:bg-green-500/10 dark:data-[active=true]:text-green-400 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                  } gap-3 justify-start`}
               >
                 <div className='w-4 h-4 flex items-center justify-center'>
-                  <Search className='h-4 w-4 text-gray-500 group-hover:text-green-600 data-[active=true]:text-green-700 dark:text-gray-400 dark:group-hover:text-green-400 dark:data-[active=true]:text-green-400' />
+                  <Search className='h-4 w-4 group-hover:text-orange-600 data-[active=true]:text-orange-700 dark:text-gray-400 dark:group-hover:text-green-400 dark:data-[active=true]:text-green-400' />
                 </div>
                 {!isCollapsed && (
                   <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
@@ -256,12 +282,11 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
                       href={item.href}
                       onClick={() => setActive(item.href)}
                       data-active={isActive}
-                      className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-green-600 data-[active=true]:bg-green-500/20 data-[active=true]:text-green-700 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-green-400 dark:data-[active=true]:bg-green-500/10 dark:data-[active=true]:text-green-400 ${
-                        isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
-                      } gap-3 justify-start`}
+                      className={`group flex items-center rounded-lg px-2 py-2 pl-4 text-sm text-gray-700 hover:bg-gray-100/30 hover:text-orange-600 data-[active=true]:bg-orange-500/10 data-[active=true]:text-orange-600 transition-colors duration-200 min-h-[40px] dark:text-gray-300 dark:hover:text-green-400 dark:data-[active=true]:bg-green-500/10 dark:data-[active=true]:text-green-400 ${isCollapsed ? 'w-full max-w-none mx-0' : 'mx-0'
+                        } gap-3 justify-start`}
                     >
                       <div className='w-4 h-4 flex items-center justify-center'>
-                        <Icon className='h-4 w-4 text-gray-500 group-hover:text-green-600 data-[active=true]:text-green-700 dark:text-gray-400 dark:group-hover:text-green-400 dark:data-[active=true]:text-green-400' />
+                        <Icon className='h-4 w-4 group-hover:text-orange-600 data-[active=true]:text-orange-700 dark:text-gray-400 dark:group-hover:text-orange-400 dark:data-[active=true]:text-orange-400' />
                       </div>
                       {!isCollapsed && (
                         <span className='whitespace-nowrap transition-opacity duration-200 opacity-100'>
@@ -276,9 +301,8 @@ const Sidebar = ({ onToggle, activePath = '/' }: SidebarProps) => {
           </div>
         </aside>
         <div
-          className={`transition-all duration-300 sidebar-offset ${
-            isCollapsed ? 'w-16' : 'w-64'
-          }`}
+          className={`transition-all duration-300 sidebar-offset ${isCollapsed ? 'w-16' : 'w-64'
+            }`}
         ></div>
       </div>
     </SidebarContext.Provider>

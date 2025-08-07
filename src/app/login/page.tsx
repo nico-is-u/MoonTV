@@ -71,6 +71,7 @@ function LoginPageClient() {
   const searchParams = useSearchParams();
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [remindTxt, setRemindTxt] = useState('登录中...');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [shouldAskUsername, setShouldAskUsername] = useState(true);
@@ -111,19 +112,21 @@ function LoginPageClient() {
       });
 
       if (res.ok) {
+        setRemindTxt('登录成功，正在跳转...');
         const redirect = searchParams.get('redirect') || '/';
         router.replace(redirect);
       } else if (res.status === 401) {
         const data = await res.json().catch(() => ({}));
+        setLoading(false);
         setError(data.error ?? '服务器错误');
       } else {
         const data = await res.json().catch(() => ({}));
+        setLoading(false);
         setError(data.error ?? '服务器错误');
       }
     } catch (error) {
-      setError('网络错误，请稍后重试');
-    } finally {
       setLoading(false);
+      setError('网络错误，请稍后重试');
     }
   };
 
@@ -221,9 +224,9 @@ function LoginPageClient() {
               disabled={
                 !password || loading || (shouldAskUsername && !username)
               }
-              className='flex-1 inline-flex justify-center rounded-lg bg-orange-400 py-3 text-base font-semibold text-white shadow-lg transition-all duration-200 hover:from-green-600 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
+              className='flex-1 inline-flex justify-center rounded-lg bg-orange-300 py-3 text-base font-semibold text-gray-600 text-xl tracking-wider shadow-lg transition-all duration-200 hover:from-green-600 hover:to-blue-600 disabled:cursor-not-allowed disabled:opacity-50'
             >
-              {loading ? '登录中...' : '登录'}
+              {loading ? remindTxt : '登录'}
             </button>
           </div>
 
