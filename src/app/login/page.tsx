@@ -113,6 +113,12 @@ function LoginPageClient() {
 
       if (res.ok) {
         setRemindTxt('登录成功，正在跳转...');
+
+        /* 写的非常粗糙，待优化 */
+        if (username === 'jiajia') {
+          localStorage.setItem('hasSeenAnnouncement2', 'true');
+        }
+
         const redirect = searchParams.get('redirect') || '/';
         router.replace(redirect);
       } else if (res.status === 401) {
