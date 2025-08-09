@@ -1,2 +1,9 @@
+# 排除依赖目录（容器内会重新安装）
+node_modules
+.pnpm-store
+dist
+build
+
+# 排除环境配置文件（可选）
 .env
 .env*.local
