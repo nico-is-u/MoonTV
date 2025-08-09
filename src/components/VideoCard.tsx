@@ -194,18 +194,15 @@ export default function VideoCard({
   const handleClick = useCallback(() => {
     if (from === 'douban') {
       router.push(
-        `/play?title=${encodeURIComponent(actualTitle.trim())}${
-          actualYear ? `&year=${actualYear}` : ''
+        `/play?title=${encodeURIComponent(actualTitle.trim())}${actualYear ? `&year=${actualYear}` : ''
         }${actualSearchType ? `&stype=${actualSearchType}` : ''}`
       );
     } else if (actualSource && actualId) {
       router.push(
         `/play?source=${actualSource}&id=${actualId}&title=${encodeURIComponent(
           actualTitle
-        )}${actualYear ? `&year=${actualYear}` : ''}${
-          isAggregate ? '&prefer=true' : ''
-        }${
-          actualQuery ? `&stitle=${encodeURIComponent(actualQuery.trim())}` : ''
+        )}${actualYear ? `&year=${actualYear}` : ''}${isAggregate ? '&prefer=true' : ''
+        }${actualQuery ? `&stitle=${encodeURIComponent(actualQuery.trim())}` : ''
         }${actualSearchType ? `&stype=${actualSearchType}` : ''}`
       );
     }
@@ -310,11 +307,10 @@ export default function VideoCard({
               <Heart
                 onClick={handleToggleFavorite}
                 size={20}
-                className={`transition-all duration-300 ease-out ${
-                  favorited
-                    ? 'fill-red-600 stroke-red-600'
-                    : 'fill-transparent stroke-white hover:stroke-red-400'
-                } hover:scale-[1.1]`}
+                className={`transition-all duration-300 ease-out ${favorited
+                  ? 'fill-red-600 stroke-red-600'
+                  : 'fill-transparent stroke-white hover:stroke-red-400'
+                  } hover:scale-[1.1]`}
               />
             )}
           </div>
@@ -364,7 +360,7 @@ export default function VideoCard({
       {/* 标题与来源 */}
       <div className='mt-2 text-center'>
         <div className='relative'>
-          <span className='block text-sm font-semibold truncate text-gray-900 dark:text-gray-100 transition-colors duration-300 ease-in-out group-hover:text-green-600 dark:group-hover:text-green-400 peer'>
+          <span className='block text-sm font-semibold truncate text-gray-900 dark:text-gray-100 transition-colors duration-300 ease-in-out group-hover:text-orange-600 dark:group-hover:text-orange-400 peer'>
             {actualTitle}
           </span>
           {/* 自定义 tooltip */}
