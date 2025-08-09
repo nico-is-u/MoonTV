@@ -31,22 +31,22 @@ function HomeClient() {
   const [loading, setLoading] = useState(true);
   const { announcement } = useSite();
 
-  const [showAnnouncement, setShowAnnouncement] = useState(false);
+  // const [showAnnouncement, setShowAnnouncement] = useState(false);
 
   const [AnnouncementAnime2, setAnnouncementAnime2] = useState(false);
   const [showAnnouncement2, setShowAnnouncement2] = useState(false);
 
   // 检查公告弹窗状态
-  useEffect(() => {
-    if (typeof window !== 'undefined' && announcement) {
-      const hasSeenAnnouncement = localStorage.getItem('hasSeenAnnouncement');
-      if (hasSeenAnnouncement !== announcement) {
-        setShowAnnouncement(true);
-      } else {
-        setShowAnnouncement(Boolean(!hasSeenAnnouncement && announcement));
-      }
-    }
-  }, [announcement]);
+  // useEffect(() => {
+  //   if (typeof window !== 'undefined' && announcement) {
+  //     const hasSeenAnnouncement = localStorage.getItem('hasSeenAnnouncement');
+  //     if (hasSeenAnnouncement !== announcement) {
+  //       setShowAnnouncement(true);
+  //     } else {
+  //       setShowAnnouncement(Boolean(!hasSeenAnnouncement && announcement));
+  //     }
+  //   }
+  // }, [announcement]);
 
   // 佳佳专用弹窗
   useEffect(() => {
@@ -166,10 +166,10 @@ function HomeClient() {
     return unsubscribe;
   }, [activeTab]);
 
-  const handleCloseAnnouncement = (announcement: string) => {
-    setShowAnnouncement(false);
-    localStorage.setItem('hasSeenAnnouncement', announcement); // 记录已查看弹窗
-  };
+  // const handleCloseAnnouncement = (announcement: string) => {
+  //   setShowAnnouncement(false);
+  //   localStorage.setItem('hasSeenAnnouncement', announcement); // 记录已查看弹窗
+  // };
 
   const handleCloseAnnouncement2 = () => {
     setShowAnnouncement2(false);
@@ -381,7 +381,7 @@ function HomeClient() {
         </div>
       </div>
 
-      {announcement && showAnnouncement && (
+      {/* {announcement && showAnnouncement && (
         <div
           className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm dark:bg-black/70 p-4 transition-opacity duration-300 ${showAnnouncement ? '' : 'opacity-0 pointer-events-none'
             }`}
@@ -413,7 +413,7 @@ function HomeClient() {
             </button>
           </div>
         </div>
-      )}
+      )} */}
 
       {showAnnouncement2 && (
         <div
