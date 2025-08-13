@@ -117,6 +117,8 @@ function LoginPageClient() {
         /* 写的非常粗糙，待优化 */
         if (username === 'jiajia') {
           localStorage.setItem('hasSeenAnnouncement2', 'true');
+        } else {
+          localStorage.removeItem('hasSeenAnnouncement2');
         }
 
         const redirect = searchParams.get('redirect') || '/';

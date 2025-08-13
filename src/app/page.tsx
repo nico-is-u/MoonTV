@@ -23,6 +23,9 @@ import ScrollableRow from '@/components/ScrollableRow';
 import { useSite } from '@/components/SiteProvider';
 import VideoCard from '@/components/VideoCard';
 
+/* 广告位 */
+import adImage2 from '../../public/static/ad2.jpg';
+
 function HomeClient() {
   const [activeTab, setActiveTab] = useState<'home' | 'favorites'>('home');
   const [hotMovies, setHotMovies] = useState<DoubanItem[]>([]);
@@ -179,6 +182,7 @@ function HomeClient() {
   return (
     <PageLayout>
       <div className='px-2 sm:px-10 py-4 sm:py-8 overflow-visible'>
+
         {/* 顶部 Tab 切换 */}
         <div className='mb-8 flex justify-center'>
           <CapsuleSwitch
@@ -189,6 +193,11 @@ function HomeClient() {
             active={activeTab}
             onChange={(value) => setActiveTab(value as 'home' | 'favorites')}
           />
+        </div>
+
+        {/* 广告位1 */}
+        <div className='max-w-[95%] mx-auto'>
+          <img src={adImage2.src} alt="广告位" ></img>
         </div>
 
         <div className='max-w-[95%] mx-auto'>
