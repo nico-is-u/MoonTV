@@ -24,6 +24,7 @@ import { useSite } from '@/components/SiteProvider';
 import VideoCard from '@/components/VideoCard';
 
 /* 广告位 */
+import Image from 'next/image';
 import adImage2 from '../../public/static/ad2.jpg';
 
 function HomeClient() {
@@ -197,7 +198,7 @@ function HomeClient() {
 
         {/* 广告位1 */}
         <div className='max-w-[95%] mx-auto'>
-          <img src={adImage2.src} alt="广告位" ></img>
+          <Image src={adImage2.src} alt="广告位"></Image>
         </div>
 
         <div className='max-w-[95%] mx-auto'>

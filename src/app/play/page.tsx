@@ -28,6 +28,7 @@ import EpisodeSelector from '@/components/EpisodeSelector';
 import PageLayout from '@/components/PageLayout';
 
 /* 广告位 */
+import Image from 'next/image';
 import adImage2 from '../../../public/static/ad2.jpg';
 
 // 扩展 HTMLVideoElement 类型以支持 hls 属性
@@ -1757,7 +1758,7 @@ function PlayPageClient() {
 
         {/* 广告位1 */}
         <div className='max-w-[95%] mx-auto'>
-          <img src={adImage2.src} alt="广告位" ></img>
+          <Image src={adImage2.src} alt="广告位"></Image>
         </div>
 
         {/* 第二行：播放器和选集 */}
@@ -1980,7 +1981,7 @@ function PlayPageClient() {
 
         {/* 广告位1 */}
         <div className='max-w-[95%] mx-auto'>
-          <img src={adImage2.src} alt="广告位" ></img>
+          <Image src={adImage2.src} alt="广告位"></Image>
         </div>
 
       </div>
