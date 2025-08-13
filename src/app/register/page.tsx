@@ -26,10 +26,6 @@ import { useRouter } from 'next/navigation';
 function RegisterPageClient() {
   const router = useRouter();
 
-  useEffect(() => {
-
-  });
-
   // 去注册页面
   const goLogin = () => {
     router.push('/login');
